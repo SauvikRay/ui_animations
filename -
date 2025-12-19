@@ -1,0 +1,306 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:sauvik_ui/resource/all_estension.dart';
+import 'package:sauvik_ui/resource/assets_res.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+
+enum Side { left, right }
+
+class MonumentScreen extends StatefulWidget {
+  const MonumentScreen({super.key});
+
+  @override
+  State<MonumentScreen> createState() => _MonumentScreenState();
+}
+
+class _MonumentScreenState extends State<MonumentScreen> {
+  static const double _waveLift = 10;
+  static const double _waveSlide = 0.35;
+
+  Widget _waveCore({
+    required Widget child,
+    required double delayMs,
+    required bool fromLeft,
+    double slideScale = 1,
+  }) {
+    final slide = _waveSlide * slideScale;
+    return child
+        .animate(delay: delayMs.ms)
+        .slideX(
+          begin: fromLeft ? -slide : slide,
+          end: 0,
+          duration: 550.ms,
+          curve: Curves.easeOut,
+        )
+        .fadeIn(duration: 400.ms)
+        .then(delay: 120.ms)
+        // .animate(onPlay: (c) => c.repeat(reverse: true))
+        .moveY(
+          begin: 0,
+          end: -_waveLift,
+          duration: 1100.ms,
+          curve: Curves.easeInOut,
+        );
+  }
+
+  Widget _waveSvg({
+    required String asset,
+    required Key key,
+    double? height,
+    required double delayMs,
+    required bool fromLeft,
+  }) => _waveCore(
+    child: _svg(asset: asset, key: key, height: height),
+    delayMs: delayMs,
+    fromLeft: fromLeft,
+  );
+  final GlobalKey leftOneKey = GlobalKey();
+  final GlobalKey leftTwoKey = GlobalKey();
+  final GlobalKey leftThreeKey = GlobalKey();
+  final GlobalKey leftFourKey = GlobalKey();
+
+  final GlobalKey rightOneKey = GlobalKey();
+  final GlobalKey rightTwoKey = GlobalKey();
+  final GlobalKey rightThreeKey = GlobalKey();
+  final GlobalKey rightFourKey = GlobalKey();
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    super.initState();
+  }
+
+  Widget _svg({required String asset, required Key key, double? height}) =>
+      Transform.translate(
+        key: key,
+        offset: Offset(0, 0), // tweak dx to set overlap/spacing
+        child: ClipRect(
+          child: SvgPicture.asset(
+            asset,
+            fit: BoxFit.contain,
+            alignment: Alignment.bottomCenter,
+            allowDrawingOutsideViewBox: true,
+            height: height,
+          ),
+        ),
+      );
+  double findWidgetWidth(GlobalKey widgetKey) {
+    double widgetWidth = 0.0;
+    final box = widgetKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box != null) {
+      widgetWidth = box.size.width;
+    }
+    return widgetWidth - 120;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Monument")),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 400),
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
+
+                              children: [
+                                //Top 2 Red Items
+                                Flexible(
+                                  child: _waveCore(
+                                    child: SvgPicture.asset(
+                                      AssetsRes.middleTopLeft,
+                                      fit: BoxFit.contain,
+                                      alignment: Alignment.bottomCenter,
+                                      height: 170,
+                                    ),
+                                    delayMs: 630,
+                                    fromLeft: true,
+                                    slideScale: 0.5,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: _waveCore(
+                                    child: SvgPicture.asset(
+                                      AssetsRes.middleTopRight,
+                                      fit: BoxFit.contain,
+                                      alignment: Alignment.bottomCenter,
+                                      height: 170,
+                                    ),
+                                    delayMs: 720,
+                                    fromLeft: false,
+                                    slideScale: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            10.height,
+                            //3 Red Bottom  Items
+                            Stack(
+                              children: [
+                                _waveCore(
+                                  child: SvgPicture.asset(
+                                    AssetsRes.middleCenter,
+                                    fit: BoxFit.contain,
+                                    alignment: Alignment.bottomCenter,
+                                    height: 80,
+                                  ),
+                                  delayMs: 450,
+                                  fromLeft: true,
+                                  slideScale: 0.2,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Flexible(
+                                      child: _waveCore(
+                                        child: SvgPicture.asset(
+                                          AssetsRes.middleBottomLeft,
+                                          fit: BoxFit.contain,
+                                          alignment: Alignment.bottomCenter,
+                                          height: 80,
+                                        ),
+                                        delayMs: 360,
+                                        fromLeft: true,
+                                        slideScale: 0.25,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: _waveCore(
+                                        child: SvgPicture.asset(
+                                          AssetsRes.middleBottomRight,
+                                          fit: BoxFit.contain,
+                                          alignment: Alignment.bottomCenter,
+                                          height: 80,
+                                        ),
+                                        delayMs: 540,
+                                        fromLeft: false,
+                                        slideScale: 0.25,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+
+                        // Left 4 green Items
+                        Positioned(
+                          bottom: 0,
+                          left: 130,
+                          child: _waveSvg(
+                            asset: AssetsRes.left_4,
+                            key: leftFourKey,
+                            height: 180,
+                            delayMs: 270,
+                            fromLeft: true,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 95,
+                          child: _waveSvg(
+                            asset: AssetsRes.left_3,
+                            key: leftThreeKey,
+                            height: 120,
+                            delayMs: 180,
+                            fromLeft: true,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: 60,
+                          child: _waveSvg(
+                            asset: AssetsRes.left_2,
+                            key: leftTwoKey,
+                            height: 80,
+                            delayMs: 90,
+                            fromLeft: true,
+                          ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          bottom: 0,
+                          child: _waveSvg(
+                            asset: AssetsRes.left_1,
+                            key: leftOneKey,
+                            height: 40,
+                            delayMs: 0,
+                            fromLeft: true,
+                          ),
+                        ),
+
+                        // Right 4 green Items
+                        Positioned(
+                          bottom: 0,
+                          right: 130,
+                          child: _waveSvg(
+                            asset: AssetsRes.right_4,
+                            key: rightFourKey,
+                            height: 180,
+                            delayMs: 810,
+                            fromLeft: false,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 95,
+                          child: _waveSvg(
+                            asset: AssetsRes.right_3,
+                            key: rightThreeKey,
+                            height: 120,
+                            delayMs: 900,
+                            fromLeft: false,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 60,
+                          child: _waveSvg(
+                            asset: AssetsRes.right_2,
+                            key: rightTwoKey,
+                            height: 80,
+                            delayMs: 990,
+                            fromLeft: false,
+                          ),
+                        ),
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: _waveSvg(
+                            asset: AssetsRes.right_1,
+                            key: rightOneKey,
+                            height: 40,
+                            delayMs: 1080,
+                            fromLeft: false,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
