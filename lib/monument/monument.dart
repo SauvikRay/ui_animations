@@ -1,8 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:sauvik_ui/resource/all_estension.dart';
+import 'package:sauvik_ui/resource/all_extension.dart';
 import 'package:sauvik_ui/resource/assets_res.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -56,27 +54,40 @@ class _MonumentScreenState extends State<MonumentScreen> {
   );
 
   Widget _dateBadge() =>
-      Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+      Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "16th",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.redAccent,
-                  fontFeatures: [FontFeature.notationalForms()],
-                ),
-              ),
-              Text(
-                "December",
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.green[900],
-                  fontWeight: FontWeight.bold,
-                  fontFeatures: [FontFeature.notationalForms()],
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "National ",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[900],
+                        fontFeatures: [FontFeature.notationalForms()],
+                      ),
+                    ),
+                    TextSpan(
+                      text: "Martyrs ",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.redAccent,
+                        fontFeatures: [FontFeature.notationalForms()],
+                      ),
+                    ),
+                    TextSpan(
+                      text: "Memorial",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[900],
+                        fontFeatures: [FontFeature.notationalForms()],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -91,12 +102,6 @@ class _MonumentScreenState extends State<MonumentScreen> {
             curve: Curves.easeOutBack,
           );
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
-    super.initState();
-  }
-
   Widget _svg({required String asset, double? height}) => Transform.translate(
     offset: Offset(0, 0), // tweak dx to set overlap/spacing
     child: ClipRect(
@@ -109,6 +114,13 @@ class _MonumentScreenState extends State<MonumentScreen> {
       ),
     ),
   );
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -217,7 +229,7 @@ class _MonumentScreenState extends State<MonumentScreen> {
                               ),
                             ],
                           ),
-                          Positioned(right: 30, top: 30, child: _dateBadge()),
+
                           // Left 4 green Items
                           Positioned(
                             bottom: 0,
@@ -310,6 +322,8 @@ class _MonumentScreenState extends State<MonumentScreen> {
                           ),
                         ],
                       ),
+                      20.height,
+                      _dateBadge(),
                     ],
                   ),
                 ),
